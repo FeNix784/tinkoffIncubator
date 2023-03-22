@@ -6,8 +6,9 @@ import ru.tkachev.tinkoffIncubator.entity.Translation;
 import ru.tkachev.tinkoffIncubator.model.TranslatedText;
 import ru.tkachev.tinkoffIncubator.model.TranslationRequest;
 
-import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.Set;
 import java.util.concurrent.*;
 
 @Service
@@ -31,7 +32,7 @@ public class TranslationService {
         Long requestID = jdbcService.insertRequest(userRequest);
         userRequest.setId(requestID);
 
-        ConcurrentHashMap<String, String> translatedText = new ConcurrentHashMap<>();
+        Set<HashMap<String, String>> translatedText = ConcurrentHashMap.newKeySet();
         String[] translatedWords = new String[sourceWords.length];
 
         ExecutorService executor = Executors.newFixedThreadPool(10);
@@ -45,7 +46,11 @@ public class TranslationService {
 
                 String translatedWord = translatorService.translate(sourceWords[finalI], sourceLanguage, targetLanguage);
                 translatedWords[finalI] = translatedWord;
-                translatedText.put(sourceWords[finalI], translatedWord);
+
+                HashMap<String, String> translate = new HashMap<>();
+                translate.put("original", sourceWords[finalI]);
+                translate.put("translation", translatedWord);
+                translatedText.add(translate);
 
                 Translation translation = new Translation(userRequest, sourceWords[finalI], translatedWord);
                 jdbcService.insertTranslation(translation);

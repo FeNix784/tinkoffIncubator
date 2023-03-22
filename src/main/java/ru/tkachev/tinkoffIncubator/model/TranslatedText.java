@@ -3,13 +3,14 @@ package ru.tkachev.tinkoffIncubator.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
+import java.util.Set;
 
 @Getter
 @AllArgsConstructor
 public class TranslatedText {
 
     private String translatedText;
-    private ConcurrentHashMap<String, String> words;
+    private Set<HashMap<String, String>> words;
 
 }

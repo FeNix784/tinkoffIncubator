@@ -3,7 +3,6 @@ package ru.tkachev.tinkoffIncubator.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 
 @Entity

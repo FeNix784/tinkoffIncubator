@@ -33,7 +33,7 @@ public class TranslatorService {
             connection = (HttpURLConnection) url.openConnection();
 
             connection.setRequestMethod("POST");
-            connection.setRequestProperty("Authorization", "Api-Key AQVNzfHFB6ltZSvzt-qFxfZTSkCN5oBSur5XpA2X");
+            connection.setRequestProperty("Authorization", String.format("Api-Key %s", apiKey));
             connection.setRequestProperty("Content-Type", "application/json");
 
             connection.setDoOutput(true);
