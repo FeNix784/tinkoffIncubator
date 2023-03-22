@@ -78,3 +78,8 @@ docker build -f Dockerfile -t app
     ]
 }
 ```
+
+## Автор
+
+- [Ткачев Даниил](https://github.com/FeNix784)
+
