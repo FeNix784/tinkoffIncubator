@@ -15,8 +15,10 @@ public class Request {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(columnDefinition="TEXT")
     private String inputData;
 
+    @Column(columnDefinition="TEXT")
     private String outputData;
 
     private String sourceLanguage;
