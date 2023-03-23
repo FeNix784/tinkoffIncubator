@@ -3,8 +3,8 @@ package ru.tkachev.tinkoffIncubator.service;
 import org.springframework.stereotype.Service;
 import ru.tkachev.tinkoffIncubator.entity.Request;
 import ru.tkachev.tinkoffIncubator.entity.Translation;
-import ru.tkachev.tinkoffIncubator.model.TranslatedText;
-import ru.tkachev.tinkoffIncubator.model.TranslationRequest;
+import ru.tkachev.tinkoffIncubator.dbo.TranslatedText;
+import ru.tkachev.tinkoffIncubator.dbo.TranslationRequest;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -15,9 +15,11 @@ import java.util.concurrent.*;
 public class TranslationService {
 
     private final TranslatorService translatorService;
+    private final JDBCService jdbcService;
 
-    public TranslationService(TranslatorService translatorService) {
+    public TranslationService(TranslatorService translatorService, JDBCService jdbcService) {
         this.translatorService = translatorService;
+        this.jdbcService = jdbcService;
     }
 
     public TranslatedText translate(TranslationRequest request, Timestamp requestTime, String IPAddress) {
@@ -27,7 +29,6 @@ public class TranslationService {
         String targetLanguage = request.getTargetLanguage();
         String[] sourceWords = sourceText.split(" ");
 
-        JDBCService jdbcService = new JDBCService();
         Request userRequest = new Request(sourceText, "", sourceLanguage, targetLanguage, requestTime, IPAddress);
         Long requestID = jdbcService.insertRequest(userRequest);
         userRequest.setId(requestID);

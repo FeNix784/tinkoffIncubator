@@ -3,8 +3,8 @@ package ru.tkachev.tinkoffIncubator.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.tkachev.tinkoffIncubator.model.TranslatedText;
-import ru.tkachev.tinkoffIncubator.model.TranslationRequest;
+import ru.tkachev.tinkoffIncubator.dbo.TranslatedText;
+import ru.tkachev.tinkoffIncubator.dbo.TranslationRequest;
 import ru.tkachev.tinkoffIncubator.service.TranslationService;
 
 import java.sql.Timestamp;

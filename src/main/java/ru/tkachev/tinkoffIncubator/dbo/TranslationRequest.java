@@ -1,4 +1,4 @@
-package ru.tkachev.tinkoffIncubator.model;
+package ru.tkachev.tinkoffIncubator.dbo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
