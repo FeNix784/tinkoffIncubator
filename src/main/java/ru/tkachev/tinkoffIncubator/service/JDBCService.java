@@ -1,14 +1,16 @@
 package ru.tkachev.tinkoffIncubator.service;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
 import ru.tkachev.tinkoffIncubator.entity.Request;
 import ru.tkachev.tinkoffIncubator.entity.Translation;
 
-import java.sql.*;
+import javax.inject.Inject;
+import javax.sql.DataSource;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.Objects;
 
 @Service
@@ -16,14 +18,8 @@ public class JDBCService {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public JDBCService() {
-
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("org.h2.Driver");
-        dataSource.setUrl("jdbc:h2:~/db");
-        dataSource.setUsername("root");
-        dataSource.setPassword("root");
-
+    @Inject
+    public JDBCService(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
@@ -73,8 +69,8 @@ public class JDBCService {
                     PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                     preparedStatement.setString(1, translation.getTranslatedWord());
                     preparedStatement.setString(2, translation.getWord());
-                    preparedStatement.setLong(3, translation.getRequest().getId());;
-                    return preparedStatement;
+                    preparedStatement.setLong(3, translation.getRequest().getId());
+            return preparedStatement;
 
         });
 
