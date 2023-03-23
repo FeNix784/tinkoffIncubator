@@ -3,8 +3,8 @@ package ru.tkachev.tinkoffIncubator.service;
 import org.springframework.stereotype.Service;
 import ru.tkachev.tinkoffIncubator.entity.Request;
 import ru.tkachev.tinkoffIncubator.entity.Translation;
-import ru.tkachev.tinkoffIncubator.dbo.TranslatedText;
-import ru.tkachev.tinkoffIncubator.dbo.TranslationRequest;
+import ru.tkachev.tinkoffIncubator.dto.TranslatedText;
+import ru.tkachev.tinkoffIncubator.dto.TranslationRequest;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
