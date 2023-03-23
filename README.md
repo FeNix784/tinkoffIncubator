@@ -26,7 +26,7 @@ mvn clean package
 
 3. Запустите процесс создания образа
 ```sh 
-docker build -f Dockerfile -t app
+docker build -f Dockerfile -t app .
 ```
 
 4. Запустите новый контейнер 
