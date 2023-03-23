@@ -8,7 +8,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 @Configuration
 public class DataSourceConfig {
 
-    @Value("${spring.datasource.driver-class-name}")
+    @Value("${spring.datasource.driverClassName}")
     private String driverClassName;
 
     @Value("${spring.datasource.url}")
