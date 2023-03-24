@@ -1,5 +1,6 @@
 package ru.tkachev.tinkoffIncubator.service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.tkachev.tinkoffIncubator.entity.Request;
 import ru.tkachev.tinkoffIncubator.entity.Translation;
@@ -12,15 +13,11 @@ import java.util.Set;
 import java.util.concurrent.*;
 
 @Service
+@AllArgsConstructor
 public class TranslationService {
 
     private final TranslatorService translatorService;
     private final JDBCService jdbcService;
-
-    public TranslationService(TranslatorService translatorService, JDBCService jdbcService) {
-        this.translatorService = translatorService;
-        this.jdbcService = jdbcService;
-    }
 
     public TranslatedText translate(TranslationRequest request, Timestamp requestTime, String IPAddress) {
 
