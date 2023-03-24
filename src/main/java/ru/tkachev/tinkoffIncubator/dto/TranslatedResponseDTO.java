@@ -1,16 +1,16 @@
 package ru.tkachev.tinkoffIncubator.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-
-import java.util.HashMap;
-import java.util.Set;
+import lombok.Setter;
 
 @Getter
+@Setter
+@Builder
 @AllArgsConstructor
-public class TranslatedText {
+public class TranslatedResponseDTO {
 
     private String translatedText;
-    private Set<HashMap<String, String>> words;
 
 }

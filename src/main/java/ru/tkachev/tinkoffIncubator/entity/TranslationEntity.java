@@ -5,8 +5,10 @@ import lombok.*;
 
 @Entity
 @Getter
+@Builder
 @NoArgsConstructor
-public class Translation {
+@AllArgsConstructor
+public class TranslationEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,16 +16,10 @@ public class Translation {
 
     @ManyToOne
     @JoinColumn(name = "request_id", referencedColumnName = "id")
-    private Request request;
+    private RequestEntity request;
 
     private String word;
 
     private String translatedWord;
-
-    public Translation(Request request, String word, String translatedWord) {
-        this.request = request;
-        this.word = word;
-        this.translatedWord = translatedWord;
-    }
 
 }

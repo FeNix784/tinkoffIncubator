@@ -4,8 +4,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.tkachev.tinkoffIncubator.dto.TranslatedText;
-import ru.tkachev.tinkoffIncubator.dto.TranslationRequest;
+import ru.tkachev.tinkoffIncubator.dto.TranslatedResponseDTO;
+import ru.tkachev.tinkoffIncubator.dto.TranslationRequestDTO;
 import ru.tkachev.tinkoffIncubator.service.TranslationService;
 
 import java.sql.Timestamp;
@@ -21,8 +21,13 @@ public class TranslationController {
     private final TranslationService translationService;
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<TranslatedText> translate(@RequestBody TranslationRequest request, HttpServletRequest httpRequest) {
-        TranslatedText translatedText = translationService.translate(request, new Timestamp(new Date().getTime()), httpRequest.getRemoteAddr());
+    public ResponseEntity<TranslatedResponseDTO> translate(@RequestBody TranslationRequestDTO translationRequestDTO, HttpServletRequest httpRequest) {
+
+        translationRequestDTO.setIPAddress(httpRequest.getRemoteAddr());
+        translationRequestDTO.setRequestTime(new Timestamp(new Date().getTime()));
+
+        TranslatedResponseDTO translatedText = translationService.translate(translationRequestDTO);
+
         return ResponseEntity.ok(translatedText);
     }
 }

@@ -2,82 +2,42 @@ package ru.tkachev.tinkoffIncubator.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.tkachev.tinkoffIncubator.entity.Request;
-import ru.tkachev.tinkoffIncubator.entity.Translation;
-import ru.tkachev.tinkoffIncubator.dto.TranslatedText;
-import ru.tkachev.tinkoffIncubator.dto.TranslationRequest;
-
-import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.concurrent.*;
+import ru.tkachev.tinkoffIncubator.dto.TranslatedResponseDTO;
+import ru.tkachev.tinkoffIncubator.dto.TranslationRequestDTO;
+import ru.tkachev.tinkoffIncubator.dto.YandexAPIRequestDTO;
+import ru.tkachev.tinkoffIncubator.dto.YandexAPIResponseDTO;
+import ru.tkachev.tinkoffIncubator.mapper.RequestMapper;
+import ru.tkachev.tinkoffIncubator.mapper.RequestEntityMapper;
+import ru.tkachev.tinkoffIncubator.mapper.ResponseMapper;
+import ru.tkachev.tinkoffIncubator.entity.RequestEntity;
+import ru.tkachev.tinkoffIncubator.mapper.TranslationEntityMapper;
+import ru.tkachev.tinkoffIncubator.repository.RequestRepository;
+import ru.tkachev.tinkoffIncubator.repository.TranslationRepository;
 
 @Service
 @AllArgsConstructor
 public class TranslationService {
 
     private final TranslatorService translatorService;
-    private final JDBCService jdbcService;
+    private final RequestRepository requestRepository;
+    private final TranslationRepository translationRepository;
 
-    public TranslatedText translate(TranslationRequest request, Timestamp requestTime, String IPAddress) {
+    public TranslatedResponseDTO translate(TranslationRequestDTO translationRequestDTO) {
 
-        String sourceText = request.getText();
-        String sourceLanguage = request.getSourceLanguage();
-        String targetLanguage = request.getTargetLanguage();
-        String[] sourceWords = sourceText.split(" ");
+        YandexAPIRequestDTO yandexAPIRequestDTO = new RequestMapper().toYandexAPIRequest(translationRequestDTO);
 
-        Request userRequest = new Request(sourceText, "", sourceLanguage, targetLanguage, requestTime, IPAddress);
-        Long requestID = jdbcService.insertRequest(userRequest);
-        userRequest.setId(requestID);
+        YandexAPIResponseDTO yandexAPIResponseDTO = translatorService.translate(yandexAPIRequestDTO);
 
-        Set<HashMap<String, String>> translatedText = ConcurrentHashMap.newKeySet();
-        String[] translatedWords = new String[sourceWords.length];
+        TranslatedResponseDTO translatedResponseDTO = new ResponseMapper().toTranslatedResponse(yandexAPIResponseDTO);
 
-        ExecutorService executor = Executors.newFixedThreadPool(10);
-        CountDownLatch cdl = new CountDownLatch(sourceWords.length);
+        RequestEntity requestEntity = new RequestEntityMapper().toRequestEntity(translationRequestDTO, translatedResponseDTO);
+        requestRepository.save(requestEntity);
 
-        for (int i = 0; i < sourceWords.length; i++) {
-
-            int finalI = i;
-
-            Runnable task = () -> {
-
-                String translatedWord = translatorService.translate(sourceWords[finalI], sourceLanguage, targetLanguage);
-                translatedWords[finalI] = translatedWord;
-
-                HashMap<String, String> translate = new HashMap<>();
-                translate.put("original", sourceWords[finalI]);
-                translate.put("translation", translatedWord);
-                translatedText.add(translate);
-
-                Translation translation = new Translation(userRequest, sourceWords[finalI], translatedWord);
-                jdbcService.insertTranslation(translation);
-
-                cdl.countDown();
-
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            };
-
-            executor.submit(task);
+        for (int i = 0; i < yandexAPIResponseDTO.getTranslations().size(); i++) {
+            translationRepository.save(new TranslationEntityMapper().toTranslationEntity(requestEntity,
+                    yandexAPIRequestDTO.getTexts()[i], yandexAPIResponseDTO.getTranslations().get(i).get("text")));
         }
 
-        executor.shutdown();
-
-        try {
-            cdl.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        String outputText = String.join(" ", translatedWords);
-        userRequest.setOutputData(outputText);
-
-        jdbcService.updateRequest(userRequest);
-
-        return new TranslatedText(outputText, translatedText);
+        return translatedResponseDTO;
     }
 }

@@ -8,8 +8,10 @@ import java.sql.Timestamp;
 @Entity
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
-public class Request {
+@AllArgsConstructor
+public class RequestEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,14 +30,5 @@ public class Request {
     private Timestamp requestTime;
 
     private String IPAddress;
-
-    public Request(String inputData, String outputData, String sourceLanguage, String targetLanguage, Timestamp requestTime, String IPAddress) {
-        this.inputData = inputData;
-        this.outputData = outputData;
-        this.sourceLanguage = sourceLanguage;
-        this.targetLanguage = targetLanguage;
-        this.requestTime = requestTime;
-        this.IPAddress = IPAddress;
-    }
 
 }
